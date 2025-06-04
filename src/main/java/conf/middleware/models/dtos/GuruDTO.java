@@ -3,7 +3,7 @@ package conf.middleware.models.dtos;
 import org.jboss.resteasy.reactive.RestForm;
 
 public class GuruDTO {
-    public Long id;
+    public int id;
     @RestForm
     public String firstName;
     @RestForm
@@ -19,11 +19,26 @@ public class GuruDTO {
     @RestForm
     public String country;
 
-    public Long getId() {
+    public GuruDTO() {
+
+    }
+
+    public GuruDTO(int id, String firstName, String lastName, String status, String region, String temple, Integer age, String country) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.status = status;
+        this.region = region;
+        this.temple = temple;
+        this.age = age;
+        this.country = country;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -4,8 +4,18 @@ import java.util.Date;
 
 public class Devotee {
     private String id;
+
     private Date createdOn;
     private AccountStatus  status;
+
+    public Devotee() {
+    }
+
+    public Devotee(String id, Date createdOn, AccountStatus status) {
+        this.id = id;
+        this.createdOn = createdOn;
+        this.status = status;
+    }
 
     public String getId() {
         return id;

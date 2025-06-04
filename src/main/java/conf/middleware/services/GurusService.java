@@ -1,8 +1,6 @@
 package conf.middleware.services;
 
-import conf.middleware.models.Gurus;
-import conf.middleware.models.LocationInfo;
-import conf.middleware.models.Temple;
+import conf.middleware.models.*;
 import conf.middleware.models.dtos.GuruDTO;
 import io.agroal.api.AgroalDataSource;
 import io.smallrye.mutiny.Multi;
@@ -17,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,7 +102,7 @@ public class GurusService {
                 .addString(mentor.temple)
                 .addInteger(mentor.age)
                 .addString(mentor.country)
-                .addInteger(mentor.id.intValue());;
+                .addInteger(mentor.id);;
 
         return client
                 .preparedQuery(sql)
@@ -144,6 +143,37 @@ public class GurusService {
                         row.getString("last_name"),row.getInteger("id")+"",row.getString("region")
                         ,row.getString("country"),row.getInteger("age"),new Temple("name","id",new LocationInfo())))
                 .collect().asList(); // returns Uni<List<String>>
+    }
+
+    public Uni<List<GuruDTO>> getGuru(int id ){
+        String fetchguru="select * from  public.mentor where id=$1";
+        return client.preparedQuery(fetchguru)
+                .execute(Tuple.tuple().addInteger(id))
+                .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))
+                .onItem().transform(row -> new GuruDTO(id, row.getString("first_name"),row.getString("last_name"),
+                        row.getString("status"),row.getString("region"), row.getString("temple"),
+                        row.getInteger("age"),row.getString("country")) )
+                .collect().asList();
+
+
+
+    }
+
+    public Uni<List<GuruDTO>> getGuruFromUsername(String username ){
+        String newdevotee="SELECT * \n" + //
+                "FROM public.mentor AS b\n" + //
+                "RIGHT JOIN public.platform_users pu \n" + //
+                "  ON b.id = pu.userid\n" + //
+                "WHERE pu.username =$1";
+        return client.preparedQuery(newdevotee)
+                .execute(Tuple.tuple().addString(username))
+                .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))
+                .onItem().transform(row -> new GuruDTO(row.getInteger("id"), row.getString("first_name"),row.getString("last_name"),
+                        row.getString("status"),row.getString("region"), row.getString("temple"),
+                        row.getInteger("age"),row.getString("country")))
+                .collect().asList();
+
+
     }
 
 }

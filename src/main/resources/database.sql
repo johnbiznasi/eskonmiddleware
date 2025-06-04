@@ -45,6 +45,8 @@ CREATE TABLE platform_users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
+CREATE INDEX idx_platform_users_username
+ON public.platform_users (username);
 
 CREATE TABLE platform_roles (
     roleid SERIAL PRIMARY KEY,

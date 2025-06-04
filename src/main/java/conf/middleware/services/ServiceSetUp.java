@@ -26,6 +26,7 @@ public class ServiceSetUp {
         JdbcRealm jdbcRealm = new JdbcRealm();
         jdbcRealm.setAuthenticationQuery("SELECT password FROM  public.platform_users WHERE username = ?");
         jdbcRealm.setDataSource(this.db);
+
         jdbcRealm.setUserRolesQuery("SELECT role_name FROM platform_roles WHERE username = ?");
         jdbcRealm.setPermissionsQuery("SELECT permission FROM roles_permissions WHERE role_name = ?");
         SecurityUtils.setSecurityManager(new DefaultSecurityManager(jdbcRealm));

@@ -40,7 +40,7 @@ public class AccountSetup {
     @PUT
     @Produces(MediaType.TEXT_PLAIN)
     public Uni<Boolean> updateTeacherAccount(@BeanParam GuruDTO newguru,int userid) {
-        newguru.setId((long)userid);
+        newguru.setId(userid);
         return this.regservice.updateMentor(newguru);
 
     }
