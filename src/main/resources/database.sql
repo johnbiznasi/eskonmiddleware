@@ -54,6 +54,7 @@ CREATE TABLE platform_roles (
     role_description TEXT,
     created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+create   table  public_keys(account   int ,key text,id   serial   primary key, created_on  timestamp)
 
 
 
