@@ -50,6 +50,7 @@ public class PreAuthServices {
 
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         Subject subject = SecurityUtils.getSubject();
+
         try {
             subject.login(token);
             subject.getSession();

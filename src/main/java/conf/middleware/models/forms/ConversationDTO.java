@@ -1,4 +1,4 @@
-package conf.middleware.models.dtos;
+package conf.middleware.models.forms;
 
 import org.jboss.resteasy.reactive.RestForm;
 

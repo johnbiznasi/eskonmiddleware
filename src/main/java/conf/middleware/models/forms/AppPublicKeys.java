@@ -1,4 +1,4 @@
-package conf.middleware.models.dtos;
+package conf.middleware.models.forms;
 
 import org.jboss.resteasy.reactive.RestForm;
 
@@ -7,7 +7,6 @@ public class AppPublicKeys {
     private   String  key;
     @RestForm
     private   int   account;
-
     public String getKey() {
         return key;
     }

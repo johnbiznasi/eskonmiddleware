@@ -6,17 +6,24 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import conf.middleware.services.DevoteeService;
 import conf.middleware.services.GurusService;
+import conf.middleware.services.JwtGenerator;
 import conf.middleware.services.PreAuthServices;
 import io.quarkus.logging.Log;
 import io.vertx.mutiny.sqlclient.Pool;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.apache.shiro.session.Session;
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.RestPath;
+
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Path("/authenticate")
 public class Login {
@@ -42,8 +49,9 @@ public class Login {
 
     @POST
     @Path("portal")
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
-    public String portalLogin(@BeanParam LoginParameter login) {
+    public Response portalLogin(@BeanParam LoginParameter login) {
         ObjectNode json = objectMapper.createObjectNode();
         Optional<Session>  logginAttemp = this.preauth.portalAuthenticate(login.username, login.password);
         if(logginAttemp.isEmpty()){
@@ -51,17 +59,26 @@ public class Login {
         }else{
             json.put("message","OK");
             json.put("session",logginAttemp.get().getId().toString());
+
+
+
             try {
-                json.put("account", objectMapper.writeValueAsString(guruService.getGuruFromUsername(login.username).await().indefinitely().get(0)));
+             //   json.put("account", objectMapper.writeValueAsString(devoteeService.getDevoteeFromUsername(login.username).await().indefinitely().get(0)));
+                HashSet<String>  roles=  new HashSet<>();
+                roles.add("admin");
+                String token = JwtGenerator.generate(login.username,roles,objectMapper.writeValueAsString(guruService.getGuruFromUsername(login.username).await().indefinitely().get(0)));
+              //  String token = JwtGenerator.generate(login.username,roles);
+                return Response.ok(Map.of("token", token)).build();
             } catch (Exception e) {
                 Log.error(e);
                 e.printStackTrace();
             }
         }
-        return json.toPrettyString();
+        return Response.status(Response.Status.UNAUTHORIZED).build();
     }
     @POST
     @Path("app")
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     public String appLogin(@BeanParam LoginParameter login) {
         ObjectNode json = objectMapper.createObjectNode();

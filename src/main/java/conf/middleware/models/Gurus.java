@@ -1,6 +1,8 @@
 package conf.middleware.models;
 
 public class Gurus {
+    private final String email;
+    private final String cellphone;
     String firstName;
     String lastName;
     int  age;
@@ -8,10 +10,11 @@ public class Gurus {
     Temple temple;
     String region;
     String  country;
-
-    public Gurus(String firstName,
+String    publicKey;
+boolean conversationStarted;
+    public Gurus( boolean converstaionStarted,String firstName,
                  String lastName,
-                 String id, String region, String country, int age, Temple temple) {
+                 String id, String region, String country, int age, Temple temple,String publicKey,String email, String cellphone) {
         this.firstName=firstName;
         this.lastName=lastName;
         this.id=id;
@@ -19,6 +22,22 @@ public class Gurus {
         this.age=age;
         this.region=region;
         this.country=country;
+        this.publicKey=publicKey;
+        this.email=email;
+        this.cellphone=cellphone;
+        this.conversationStarted =converstaionStarted;
+    }
+
+    public boolean isConversationStarted() {
+        return conversationStarted;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
     }
 
     public int getAge() {

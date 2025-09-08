@@ -1,7 +1,6 @@
 package conf.middleware.endpoints;
 
-import conf.middleware.models.dtos.AppPublicKeys;
-import conf.middleware.models.dtos.GuruDTO;
+import conf.middleware.models.forms.AppPublicKeys;
 import conf.middleware.services.EncryptionService;
 import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;

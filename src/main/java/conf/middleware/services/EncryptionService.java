@@ -2,6 +2,7 @@ package conf.middleware.services;
 
 import io.agroal.api.AgroalDataSource;
 import io.vertx.mutiny.sqlclient.Pool;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
-
+@ApplicationScoped
 public class EncryptionService {
     private static final Logger log = LoggerFactory.getLogger(EncryptionService.class);
     @Inject

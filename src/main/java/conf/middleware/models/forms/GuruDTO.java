@@ -1,4 +1,4 @@
-package conf.middleware.models.dtos;
+package conf.middleware.models.forms;
 
 import org.jboss.resteasy.reactive.RestForm;
 
@@ -6,6 +6,8 @@ public class GuruDTO {
     public int id;
     @RestForm
     public String firstName;
+    @RestForm
+    public String email;
     @RestForm
     public String lastName;
     @RestForm
@@ -18,9 +20,38 @@ public class GuruDTO {
     public Integer age;
     @RestForm
     public String country;
+    private String   role;
+
+    public  String privateKey;
+    public   String publicKey;
+
+    public   String cellphone;
 
     public GuruDTO() {
 
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public GuruDTO(String   role,int id, String firstName, String lastName, String status, String region, String temple,
+                   Integer age, String country, String privateKey, String publicKey) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.status = status;
+        this.region = region;
+        this.temple = temple;
+        this.age = age;
+        this.country = country;
+        this.privateKey =privateKey;
+        this.publicKey=publicKey;
+        this.role=role;
     }
 
     public GuruDTO(int id, String firstName, String lastName, String status, String region, String temple, Integer age, String country) {
@@ -88,6 +119,22 @@ public class GuruDTO {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getCellphone() {
+        return cellphone;
+    }
+
+    public void setCellphone(String cellphone) {
+        this.cellphone = cellphone;
     }
 
     public String getCountry() {
