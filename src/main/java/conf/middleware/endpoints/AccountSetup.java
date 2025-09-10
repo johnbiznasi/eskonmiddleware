@@ -68,7 +68,7 @@ public class AccountSetup {
     public Uni<MobileAccount> createAccount(@BeanParam DevoteeAccountSetup parameters) {
 
 
-      return   this.devservice.createDevotee(new Devotee("",new Date(), AccountStatus.ACTIVE,parameters.publickey)).
+      return   this.devservice.createDevotee(new Devotee("",new Date().toString(), AccountStatus.ACTIVE,parameters.publickey)).
                 onItem().transform((clientid)->{
                     HashSet<String> roles=  new HashSet<>();
                     roles.add("devotee");

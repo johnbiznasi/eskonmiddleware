@@ -185,7 +185,7 @@ log.info("Cheking key>>"+key.name()+"with  value"+value);
     }
 
     public Uni<List<GuruDTO>> getGuru(int id ){
-        String fetchguru="select * from  public.mentor where id=$1";
+        String fetchguru="select * from public.mentor where id=$1";
         return client.preparedQuery(fetchguru)
                 .execute(Tuple.tuple().addInteger(id))
                 .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))

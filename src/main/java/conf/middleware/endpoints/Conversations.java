@@ -34,7 +34,6 @@ public class Conversations {
     @Produces(MediaType.TEXT_PLAIN)
     public Uni<List<ConversationsHeads>> GETDevoteeConverations(int userid) {
        return this.devoteeService.devoteeConversations(userid);
-
     }
 
     @Path("conversations/start/{userid}/{teacherid}")
@@ -48,9 +47,9 @@ public class Conversations {
 
     @Path("/conversations/get/{userid}/{teacherid}")
     @GET
-
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Uni<List<Message>> getConverations(int userid, int teacherid) {
+        log.info("Fetching  conversations  for  userid "+userid+"Teache  id"+teacherid);
         return this.devoteeService.converationMessages(userid,teacherid);
 
     }

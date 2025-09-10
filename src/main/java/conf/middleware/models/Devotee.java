@@ -8,7 +8,7 @@ public class Devotee {
     private String sharedKey;
     private String  teacherPublicKey;
 private String mentorId;
-    private Date createdOn;
+    private String createdOn;
     private AccountStatus  status;
 
     public Devotee() {
@@ -22,14 +22,15 @@ private String mentorId;
         this.mentorId = mentorId;
     }
 
-    public Devotee(String id, Date createdOn, AccountStatus status, String publickey) {
+    public Devotee(String id, String createdOn, AccountStatus status, String publickey) {
         this.id = id;
         this.createdOn = createdOn;
         this.status = status;
         this.publicKey=publickey;
 
     }
-    public Devotee(String mentorId,String id, Date createdOn, AccountStatus status,String publickey,String shared, String teacherPublicKey) {
+    public Devotee(String mentorId,String id, String createdOn, AccountStatus status,String publickey,String shared,
+                   String teacherPublicKey) {
         this.id = id;
         this.createdOn = createdOn;
         this.status = status;
@@ -63,11 +64,11 @@ private String mentorId;
         this.id = id;
     }
 
-    public Date getCreatedOn() {
+    public String getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
     }
 

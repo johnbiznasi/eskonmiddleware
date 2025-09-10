@@ -68,15 +68,44 @@ public class EskonWebsocket {
             switch(jsonNode.get("operation").asText()) {
                 case "set_teacher_key": {
                     devoteeService.bookGuru(jsonNode.get("teacher").asInt(), jsonNode.get("devotee").asInt());
+                    String rec=jsonNode.get("receiver").asText().equals("20")?"21":jsonNode.get("receiver").asText();
+                    String receiver = getReplyToUserKey(rec, usertype);
                     //mark devoteee  with  preference
+                    Session session = sessions.get(receiver);
+                    if(session!=null&&session.isOpen()){
+                        log.info("receiver  is  available"+receiver);
+                        session.getAsyncRemote().sendObject(message);
+
+                    }else{
+                        if(session!=null) {
+                            sessions.remove(session);
+                        }
+                        log.info("receiver  is  not  online"+receiver);
+
+                    }
                     break;
                 }
 
                 case "set_devotee_key": {
                     devoteeService.bookDevotee(jsonNode.get("teacher").asInt(), jsonNode.get("devotee").asInt());
+                    String rec=jsonNode.get("receiver").asText().equals("20")?"21":jsonNode.get("receiver").asText();
+                    String receiver = getReplyToUserKey(rec, usertype);
+                    Session session = sessions.get(receiver);
+                    if(session!=null&&session.isOpen()){
+                        log.info("receiver  is  available"+receiver);
+                        session.getAsyncRemote().sendObject(message);
+
+
+                    }else{
+                        if(session!=null) {
+                            sessions.remove(session);
+                        }
+                        log.info("receiver  is  not  online"+receiver);
+
+                    }
                     break;
                 }
-                case "send_message":{
+                case "send_message_guru":{
                     boolean delivered=false;
                     String rec=jsonNode.get("receiver").asText().equals("20")?"21":jsonNode.get("receiver").asText();
                     String receiver = getReplyToUserKey(rec, usertype);
@@ -95,9 +124,11 @@ delivered=true;
 
                     }
                     //update  to  only save   secured   chats
-                    devoteeService.saveConversation(delivered,new Message(jsonNode.get("sender").asInt(),
+                    devoteeService.saveConversation(delivered,new Message(jsonNode.get("sender").asText(),
                                     jsonNode.get("cptext").asText()
-                                    , jsonNode.get("cptext").asText(), new Date().getTime() + ""), 1, 2)
+                                    , jsonNode.get("cptext").asText(), new Date().getTime() + "",delivered+""),
+                                    Integer.parseInt(jsonNode.get("sender").asText()),
+                                    Integer.parseInt(rec),jsonNode.get("ounce").asText(),jsonNode.get("mac").asText())
                             .subscribe().with(value->{
                                 log.info("after insert");
                             },err->{
@@ -105,6 +136,54 @@ delivered=true;
                                 err.printStackTrace();
                             });
                     break;
+                }
+                case "send_message_devotee":{
+                    boolean delivered=false;
+                    String rec=jsonNode.get("receiver").asText().equals("20")?"21":jsonNode.get("receiver").asText();
+                    String receiver = getReplyToUserKey(rec, usertype);
+                    // receiver="21";
+                    Session session = sessions.get(receiver);
+                    if(session!=null&&session.isOpen()){
+
+                        session.getAsyncRemote().sendObject(message);
+                        delivered=true;
+
+                    }else{
+                        if(session!=null) {
+                            sessions.remove(session);
+                        }
+
+
+                    }
+                    //update  to  only save   secured   chats
+                    devoteeService.saveConversation(delivered,new Message(jsonNode.get("sender").asText(),
+                                    jsonNode.get("cptext").asText()
+                                    , jsonNode.get("cptext").asText(), new Date().getTime() + "",delivered+""), Integer.parseInt(rec), Integer.parseInt(jsonNode.get("sender").asText()),
+                                    jsonNode.get("ounce").asText(),jsonNode.get("mac").asText())
+                            .subscribe().with(value->{
+                                log.info("after insert");
+                            },err->{
+                                log.info("after insert ERROR");
+                                err.printStackTrace();
+                            });
+                    break;
+                }
+                default:{
+                    String rec=jsonNode.get("receiver").asText().equals("20")?"21":jsonNode.get("receiver").asText();
+                    String receiver = getReplyToUserKey(rec, usertype);
+                    Session session = sessions.get(receiver);
+                    if(session!=null&&session.isOpen()){
+                        log.info("receiver  is  available"+receiver);
+                        session.getAsyncRemote().sendObject(message);
+
+
+                    }else{
+                        if(session!=null) {
+                            sessions.remove(session);
+                        }
+                        log.info("receiver  is  not  online"+receiver);
+
+                    }
                 }
             }
 

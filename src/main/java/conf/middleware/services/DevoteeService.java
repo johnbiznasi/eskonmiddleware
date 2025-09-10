@@ -39,7 +39,7 @@ public class DevoteeService {
         return client.preparedQuery(newdevotee)
                 .execute(Tuple.tuple().addInteger(id))
                 .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))
-                .onItem().transform(row -> new Devotee(row.getInteger("id")+"",new Date(), AccountStatus.valueOf(row.getString("status")),row.getString("public_key")))
+                .onItem().transform(row -> new Devotee(row.getInteger("id")+"",new Date().toString(), AccountStatus.valueOf(row.getString("status")),row.getString("public_key")))
                 .collect().asList();
 
 
@@ -54,7 +54,7 @@ public class DevoteeService {
         return client.preparedQuery(newdevotee)
                 .execute(Tuple.tuple().addString(username))
                 .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))
-                .onItem().transform(row -> new Devotee(row.getInteger("id")+"",new Date(),
+                .onItem().transform(row -> new Devotee(row.getInteger("id")+"",new Date().toString(),
                         AccountStatus.ACTIVE,
                         row.getString("public_key")))
                 .collect().asList();
@@ -67,7 +67,7 @@ public class DevoteeService {
         return client.preparedQuery(newdevotee)
                 .execute(Tuple.tuple().addString("new_account"))
                 .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))
-                .onItem().transform(row -> new Devotee(row.getInteger("id")+"",new Date(),
+                .onItem().transform(row -> new Devotee(row.getInteger("id")+"",row.getLocalDateTime("created_on").toString(),
                         AccountStatus.ACTIVE,
                         row.getString("public_key")))
                 .collect().asList();
@@ -78,7 +78,7 @@ public class DevoteeService {
         return client.preparedQuery(newdevotee)
                 .execute(Tuple.tuple().addInteger(guru))
                 .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))
-                .onItem().transform(row -> new Devotee(row.getInteger("guru")+"",row.getInteger("id")+"",new Date(row.getLocalDateTime("created_on").getNano()),
+                .onItem().transform(row -> new Devotee(row.getInteger("guru")+"",row.getInteger("id")+"",row.getLocalDateTime("created_on").toString(),
                         AccountStatus.ACTIVE,
                         row.getString("public_key"),row.getString("shared"),row.getString("teacher_public")))
                 .collect().asList();
@@ -89,7 +89,7 @@ public class DevoteeService {
         return client.preparedQuery(newdevotee)
                 .execute(Tuple.tuple().addInteger(devotee))
                 .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))
-                .onItem().transform(row -> new Devotee(row.getInteger("guru").toString(),row.getInteger("id")+"",new Date(row.getLocalDateTime("created_on").getNano()),
+                .onItem().transform(row -> new Devotee(row.getInteger("guru").toString(),row.getInteger("id")+"",row.getLocalDateTime("created_on").toString(),
                         AccountStatus.ACTIVE,
                         row.getString("public_key"),row.getString("shared"),row.getString("teacher_public")))
                 .collect().asList();
@@ -141,9 +141,16 @@ public class DevoteeService {
                 .execute(Tuple.tuple().addInteger(devotee).addInteger(teacher))
                 .onItem().transformToMulti(set -> Multi.createFrom().iterable(set))
 
-                .onItem().transform(row -> new Message(row.getInteger("sender_id"), row.getString("message_id"),
-                        row.getString("message"), row.getString("created_on")))
-                .onFailure().recoverWithItem(new Message(-1,"-1","",""))
+                .onItem().transform(row -> new Message(row.getInteger("senderid")+"", row.getInteger("conversationid").toString(),
+                        row.getString("message"), row.getString("created_on"),row.getString("status"),
+                        row.getString("ounce"),row.getString("mac")))
+                .onFailure()
+                .invoke(err -> {
+                    // capture/log the error
+                    log.info("Saving  Message ",err);  // or use a logger
+                })
+
+
                 .collect().asList();
     }
 
@@ -177,18 +184,28 @@ public class DevoteeService {
 
 
 
-    public Uni<Integer> saveConversation(boolean delivered,Message message,int guru,int devotee) {
-        String converstaions = "insert into public.conversations (senderid,message,created_on,guru,devotee,delivered)values($1,$2,$3,$4,$5,$6,$7) RETURNING conversationid";
+    public Uni<Integer> saveConversation(boolean delivered,Message message,int guru,int devotee,String ounce, String mac) {
+        String converstaions = "insert into public.conversations (senderid,message,created_on,guru,devotee,delivered,ounce,mac )" +
+                "values($1,$2,$3,$4,$5,$6,$7,$8) RETURNING conversationid";
         return client.preparedQuery(converstaions)
-                .execute(Tuple.tuple().addInteger(message.getSenderid())
-
+                .execute(Tuple.tuple()
+                        .addInteger(Integer.valueOf(message.getSenderid()))
                         .addString(message.getMessage())
-                        .addString(new Date().getTime() + "").addInteger(guru).addInteger(devotee).addBoolean(delivered))
+                        .addString(new Date().getTime() + "")
+                        .addInteger(guru)
+                        .addInteger(devotee)
+                        .addBoolean(delivered)
+                        .addString(ounce)
+                        .addString(mac)
+                )
+
+
+
                 .onItem()
                 .transform(rows -> rows.iterator().next().getInteger("conversationid"))
                 .onFailure().invoke(err -> {
                     // capture/log the error
-                    log.info("Saving  Message error",err);  // or use a logger
+                    log.info("Saving  Message errorjukiiiiii",err);  // or use a logger
                 });
 
     }
