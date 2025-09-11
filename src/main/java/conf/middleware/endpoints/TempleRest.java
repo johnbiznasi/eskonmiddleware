@@ -41,8 +41,8 @@ public class TempleRest {
 
     @Path("create")
     @POST
-    @RolesAllowed({ "admin"})
-    //@PermitAll
+   // @RolesAllowed({ "admin"})
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Temple> createTempe(@BeanParam TempleForm form) {
      return  templeservice.createTemple(new Temple(form.getName(), "",

@@ -24,6 +24,9 @@ public class EmailService {
                         email.getSubject(),
                         email.getMessage()
                 )
+        ).subscribe().with(
+                success -> System.out.println("Mail sent"),
+                Throwable::printStackTrace
         );
     }
 
@@ -36,7 +39,10 @@ public class EmailService {
                         email.getSubject(),
                         email.getMessage()
                 )
-        );
+        ).subscribe().with(
+                success -> System.out.println("Mail sent"),
+                Throwable::printStackTrace
+        );;
     }
 
 }

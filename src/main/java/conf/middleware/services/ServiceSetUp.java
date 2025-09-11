@@ -30,7 +30,7 @@ public class ServiceSetUp {
         jdbcRealm.setUserRolesQuery("SELECT role_name FROM platform_roles WHERE username = ?");
         jdbcRealm.setPermissionsQuery("SELECT permission FROM roles_permissions WHERE role_name = ?");
         SecurityUtils.setSecurityManager(new DefaultSecurityManager(jdbcRealm));
-        Log.info("Service   is  staring ********************************************************SECURITY BEING SET IUP***************************************");
+        Log.info("Service is staring ********************************************************SECURITY BEING SET IUP***************************************");
     }
 
 
